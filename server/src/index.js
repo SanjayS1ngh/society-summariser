@@ -10,6 +10,7 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json({ limit: '1mb' }));
 app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 app.use('/api/chats', require('./routes/chats'));
+app.use('/api/summaries', require('./routes/summaries'));
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.use((err, req, res, next) => {
