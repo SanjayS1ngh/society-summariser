@@ -1,36 +1,625 @@
-* { box-sizing: border-box; }
-body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f6f7f9; color: #14161a; font-size: 15px; line-height: 1.5; }
-h1 { font-size: 26px; margin: 0 0 6px; }
-h2 { font-size: 17px; margin: 0 0 10px; }
-.page { max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
-.narrow { max-width: 620px; }
-.muted { color: #5b6472; }
-.error { color: #b42318; }
-.warn { background: #fff4e5; border: 1px solid #f5c27a; padding: 10px 14px; border-radius: 8px; }
-.status { color: #0f766e; font-weight: 500; }
-.card { background: #fff; border: 1px solid #e3e6eb; border-radius: 14px; padding: 20px; margin-top: 16px; }
-.row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
-input[type=date] { font: inherit; padding: 8px 10px; border: 1px solid #c9ced6; border-radius: 8px; }
-.btn, .primary { display: inline-block; border: 0; border-radius: 10px; padding: 11px 18px; font: inherit; font-weight: 500; cursor: pointer; background: #14161a; color: #fff; }
-.primary { background: #0f766e; }
-.primary:disabled { opacity: .5; cursor: not-allowed; }
-.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.summary { background: #fff; border: 1px solid #e3e6eb; border-radius: 14px; padding: 28px; }
-.block { margin-top: 24px; }
-.count { font-size: 12px; background: #e6f4f1; color: #0f766e; border-radius: 999px; padding: 2px 8px; margin-left: 6px; }
-ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-li { border-left: 3px solid #0f766e; padding-left: 12px; }
-li p { margin: 0; }
-.meta { font-size: 13px; color: #5b6472; }
-.sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
-.chip { font: inherit; font-size: 12px; border: 1px solid #c9ced6; background: #fff; border-radius: 999px; padding: 3px 10px; cursor: pointer; color: #0f766e; }
-.chip.on { background: #0f766e; color: #fff; border-color: #0f766e; }
-.quote { flex-basis: 100%; margin: 4px 0 0; padding: 8px 12px; background: #f6f7f9; border-radius: 8px; font-size: 13px; white-space: pre-wrap; }
+/* ==========================================================================
+   PLAYFUL STICKER STYLE: matte colours, no glow, lots of personality
+   --------------------------------------------------------------------------
+   Same class names as before, so your HTML keeps working.
+
+   QUICK SETUP (5 places marked with 👉 below):
+   1. 👉 Background video    -> HTML snippet in section 3
+   2. 👉 Background picture  -> one line in :root (used if you have no video)
+   3. 👉 Hopping cartoons    -> HTML snippet in section 9 (up to 4 cartoons)
+   4. 👉 Colours             -> :root, change the hex codes
+   5. 👉 Speed of animations -> search for "SPEED" in this file
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap');
+
+
+/* ==========================================================================
+   1. COLOURS AND SETTINGS  (change these to restyle everything)
+   ========================================================================== */
+:root {
+  /* Page and card colours: flat and matte, nothing glows */
+  --bg:        #14172a;
+  --card:      #1e2340;
+  --card-2:    #262c52;
+  --edge:      #343b6b;
+  --shadow:    #090b17;   /* the hard "sticker" shadow under cards */
+
+  /* Three friendly accent colours */
+  --sun:       #ffd23f;   /* buttons, title */
+  --mint:      #2ec4b6;   /* list edges, selected chips */
+  --pink:      #ff7aa8;   /* quotes, small highlights */
+
+  --text:      #f4f5ff;
+  --text-dim:  #a4aad0;
+
+  /* 👉 BACKGROUND PICTURE (optional, only shows if there is no video).
+        Paste your image link between the quotes. Example:
+        --bg-image: url('https://example.com/my-background.jpg');
+        Leave it as "none" if you do not want a picture. */
+  --bg-image: none;
+
+  /* 👉 How dark the video/picture is. 0 = fully visible, 1 = hidden.
+        If text is hard to read, raise it. If you want more video, lower it. */
+  --bg-darkness: 0.55;
+
+  /* 👉 Size of the hopping cartoons */
+  --mascot-size: 200px;
+
+  --radius: 18px;
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ==========================================================================
+   2. PAGE BASICS
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Floating confetti (plus signs, dots, squiggles) drifting across the page.
+   It is very faint on purpose. To remove it, delete this whole block. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.14;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Ccircle cx='30' cy='40' r='5' fill='%23ffd23f'/%3E%3Cpath d='M110 30h12M116 24v12' stroke='%232ec4b6' stroke-width='3' stroke-linecap='round'/%3E%3Crect x='140' y='110' width='10' height='10' rx='2' fill='%23ff7aa8' transform='rotate(20 145 115)'/%3E%3Cpath d='M30 130q8-10 16 0t16 0' fill='none' stroke='%23ffd23f' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='100' cy='150' r='4' fill='%232ec4b6'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  animation: confetti-drift 50s linear infinite; /* SPEED: bigger number = slower */
+}
+
+@keyframes confetti-drift {
+  to { background-position: 180px 180px; }
+}
+
+
+/* ==========================================================================
+   3. 👉 BACKGROUND VIDEO
+   --------------------------------------------------------------------------
+   Put this in your HTML, right after the opening <body> tag:
+
+   <div class="bg-visual-container">
+     <video autoplay muted loop playsinline>
+       <source src="PASTE-YOUR-VIDEO-LINK-HERE.mp4" type="video/mp4">
+     </video>
+   </div>
+
+   Tips: use a short, calm, looping clip (under 10 MB). "muted" and
+   "playsinline" are required or browsers will not autoplay it.
+   ========================================================================== */
+.bg-visual-container {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-visual-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark layer on top of the video so text is always readable */
+.bg-visual-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: var(--bg-darkness);
+}
+
+
+/* ==========================================================================
+   4. LAYOUT AND PAGE-LOAD ANIMATION
+   ========================================================================== */
+.page {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+}
+
+.narrow { max-width: 640px; }
+
+/* The page pops in once, block by block, when it loads */
+.page > * { animation: pop-in 0.7s var(--bounce) both; }
+.page > *:nth-child(1) { animation-delay: 0.05s; }
+.page > *:nth-child(2) { animation-delay: 0.15s; }
+.page > *:nth-child(3) { animation-delay: 0.25s; }
+.page > *:nth-child(4) { animation-delay: 0.35s; }
+.page > *:nth-child(n+5) { animation-delay: 0.45s; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(30px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+
+/* ==========================================================================
+   5. TEXT
+   ========================================================================== */
+h1, h2 { font-family: 'Fredoka', 'Nunito', sans-serif; }
+
+h1 {
+  position: relative;
+  display: inline-block;
+  margin: 0 0 18px;
+  font-size: clamp(34px, 6vw, 50px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sun);
+}
+
+/* Wavy underline that slowly wiggles sideways */
+h1::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='8'%3E%3Cpath d='M0 4q5-6 10 0t10 0' fill='none' stroke='%232ec4b6' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  animation: squiggle 1.2s linear infinite; /* SPEED */
+}
+
+@keyframes squiggle {
+  to { background-position-x: 20px; }
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.muted { color: var(--text-dim); }
+
+
+/* ==========================================================================
+   6. MESSAGES
+   ========================================================================== */
+.error {
+  padding: 12px 16px;
+  border: 2px solid var(--pink);
+  border-radius: 12px;
+  background: rgba(255, 122, 168, 0.1);
+  color: var(--pink);
+  font-weight: 700;
+  animation: shake 0.45s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+}
+
+.warn {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  border: 2px dashed var(--sun);
+  border-radius: 14px;
+  background: rgba(255, 210, 63, 0.08);
+  color: var(--sun);
+}
+
+/* Little bouncing dot = "working on it" */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--mint);
+  font-weight: 700;
+}
+
+.status::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mint);
+  animation: bob 0.9s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+
+/* ==========================================================================
+   7. CARDS: solid, with a chunky "sticker" shadow. They lift when hovered.
+   ========================================================================== */
+.card, .summary {
+  margin-top: 22px;
+  padding: 28px;
+  background: var(--card);
+  border: 2px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--shadow);
+  transition: transform 0.25s var(--bounce), box-shadow 0.25s var(--bounce), border-color 0.2s;
+}
+/* Make the 'New summary' link look like a styled heading */
+.toolbar a {
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--sun);
+  text-decoration: none;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s var(--bounce), opacity 0.2s;
+}
+
+.toolbar a:hover {
+  transform: translateY(-2px);
+  opacity: 0.85;
+  box-shadow: none;
+}
+
+.toolbar a:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+.card:hover {
+  transform: translate(-3px, -3px) rotate(-0.4deg);
+  box-shadow: 10px 10px 0 var(--shadow);
+  border-color: var(--mint);
+}
+
+.summary { padding: 36px; }
+
+.block { margin-top: 34px; }
+
+
+/* ==========================================================================
+   8. CONTROLS, BUTTONS, LIST, CHIPS
+   ========================================================================== */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+input[type=date] {
+  font: inherit;
+  padding: 11px 16px;
+  color: var(--text);
+  color-scheme: dark;
+  background: var(--card);
+  border: 2px solid var(--edge);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s, transform 0.2s var(--bounce);
+}
+
+input[type=date]:focus {
+  border-color: var(--sun);
+  transform: scale(1.02);
+}
+
+/* Buttons feel like real keys: they press down when clicked */
+.btn, .primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 24px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--card-2);
+  border: 2px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 0 4px 0 var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s var(--bounce), box-shadow 0.15s;
+}
+
+.btn:hover, .primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 var(--shadow);
+}
+
+.btn:active, .primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--shadow);
+}
+
+.primary {
+  color: #1b1500;
+  background: var(--sun);
+  border-color: #ffe27a;
+}
+
+.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 0 var(--shadow);
+}
+
+.count {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #06201c;
+  background: var(--mint);
+  border-radius: 999px;
+  vertical-align: middle;
+  animation: pop-in 0.5s var(--bounce) both;
+}
+
+/* List items slide in one after another */
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  padding: 15px 18px;
+  background: var(--card-2);
+  border-left: 5px solid var(--mint);
+  border-radius: 4px 14px 14px 4px;
+  transition: transform 0.25s var(--bounce), border-color 0.2s;
+  animation: slide-in 0.6s var(--smooth) both;
+}
+
+li:nth-child(1) { animation-delay: 0.05s; }
+li:nth-child(2) { animation-delay: 0.12s; }
+li:nth-child(3) { animation-delay: 0.19s; }
+li:nth-child(4) { animation-delay: 0.26s; }
+li:nth-child(5) { animation-delay: 0.33s; }
+li:nth-child(n+6) { animation-delay: 0.4s; }
+
+li:hover {
+  transform: translateX(8px);
+  border-left-color: var(--sun);
+}
+
+li p { margin: 0; font-weight: 600; }
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.meta {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 4px 13px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: transparent;
+  border: 2px solid var(--edge);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s var(--bounce), color 0.2s, border-color 0.2s;
+}
+
+.chip:hover {
+  color: var(--text);
+  border-color: var(--pink);
+  transform: translateY(-2px) rotate(-2deg);
+}
+
+.chip.on {
+  color: #06201c;
+  background: var(--mint);
+  border-color: var(--mint);
+  animation: pop-in 0.4s var(--bounce);
+}
+
+.quote {
+  flex-basis: 100%;
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 5px solid var(--pink);
+  border-radius: 4px 12px 12px 4px;
+  transform-origin: top;
+  animation: unfold 0.4s var(--smooth);
+}
+
+@keyframes unfold {
+  from { opacity: 0; transform: scaleY(0.5); }
+  to   { opacity: 1; transform: none; }
+}
+
+
+/* ==========================================================================
+   9. 👉 HOPPING CARTOONS
+   --------------------------------------------------------------------------
+   Put these in your HTML anywhere inside <body>. Use as many as you like
+   (each one is optional). Transparent PNG, GIF or WebP images work best.
+
+   <img class="cartoon-character cartoon-left"   src="PASTE-CARTOON-1-LINK">
+   <img class="cartoon-character cartoon-right"  src="PASTE-CARTOON-2-LINK">
+   <img class="cartoon-character cartoon-corner" src="PASTE-CARTOON-3-LINK">
+   <img class="cartoon-character cartoon-walker" src="PASTE-CARTOON-4-LINK">
+
+   What each one does:
+   .cartoon-left    hops up and down, bottom-left of the screen
+   .cartoon-right   gently swings side to side, top-right of the screen
+   .cartoon-corner  bounces and squishes, bottom-right of the screen
+   .cartoon-walker  walks slowly across the bottom of the whole screen
+
+   Where to find free cartoons: search "free transparent PNG cartoon",
+   or use animated GIF stickers. Keep each file small (under 500 KB).
+   ========================================================================== */
+.cartoon-character {
+  position: fixed;
+  z-index: 10;
+  width: var(--mascot-size);
+  height: auto;
+  pointer-events: none;            /* clicks pass through, never blocks buttons */
+  filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.35));  /* flat shadow, no glow */
+}
+
+/* Hop: jumps up, squashes slightly when landing */
+.cartoon-left {
+  bottom: 24px;
+  right: 24px;
+  transform-origin: bottom center;
+  animation: hop 1.6s ease-in-out infinite;          /* SPEED */
+}
+
+@keyframes hop {
+  0%, 100% { transform: translateY(0) scale(1.06, 0.92); }
+  15%      { transform: translateY(0) scale(0.96, 1.05); }
+  50%      { transform: translateY(-34px) scale(1, 1) rotate(3deg); }
+  85%      { transform: translateY(0) scale(0.96, 1.05); }
+}
+
+/* Swing: rocks like a pendulum */
+.cartoon-right {
+  bottom: 195px;
+  left: 24px;
+  transform-origin: top center;
+  animation: swing 3.2s ease-in-out infinite;        /* SPEED */
+}
+
+@keyframes swing {
+  0%, 100% { transform: rotate(-6deg); }
+  50%      { transform: rotate(6deg); }
+}
+
+/* Bounce: a springy up-and-down with a squish */
+.cartoon-corner {
+  right: 28px;
+  top: 244px;
+  width: calc(var(--mascot-size) * 0.8);
+  transform-origin: bottom center;
+  animation: boing 2.2s var(--bounce) infinite;      /* SPEED */
+}
+/* Style for the 'New summary' link inside the toolbar */
+
+@keyframes boing {
+  0%, 100% { transform: translateY(0) scale(1.05, 0.95); }
+  40%      { transform: translateY(-26px) scale(0.95, 1.05); }
+  70%      { transform: translateY(0) scale(1.05, 0.95); }
+}
+
+/* Walker: crosses the screen, little bounce in each step */
+.cartoon-walker {
+  top: 10px;
+  left: 0;
+  width: calc(var(--mascot-size) * 0.67);
+  animation: walk-across 28s linear infinite,        /* SPEED: bigger = slower */
+             step 0.5s ease-in-out infinite;
+}
+
+@keyframes walk-across {
+  from { left: -20vw; }
+  to   { left: 105vw; }
+}
+
+@keyframes step {
+  0%, 100% { margin-bottom: 0; }
+  50%      { margin-bottom: 10px; }
+}
+
+/* Tablets: smaller cartoons. Phones: hidden so they never cover content. */
+@media (max-width: 1024px) {
+  :root { --mascot-size: 130px; }
+}
+
+@media (max-width: 700px) {
+  .cartoon-character { display: none; }
+}
+
+
+/* ==========================================================================
+   10. PHONE LAYOUT, ACCESSIBILITY, PRINT
+   ========================================================================== */
+@media (max-width: 768px) {
+  .page { padding: 28px 16px 64px; }
+  .summary { padding: 24px 20px; }
+  .toolbar, .row { flex-direction: column; align-items: stretch; }
+  input[type=date], .btn, .primary { width: 100%; }
+}
+
+:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+
+/* People who turn off motion in their device settings get no animation */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 @media print {
-  body { background: #fff; font-size: 11px; }
-  .no-print { display: none; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  body::before, .bg-visual-container, .cartoon-character, .no-print { display: none; }
+  h1 { color: #000; }
+  h1::after { display: none; }
   .page { padding: 0; max-width: none; }
-  .summary { border: 0; padding: 0; }
-  .block { break-inside: avoid; margin-top: 12px; }
+  .page > *, li { animation: none; }
+  .summary, .card { border: none; padding: 0; box-shadow: none; background: transparent; }
+  li { border-left: 3px solid #000; background: transparent; }
+  .block { break-inside: avoid; }
 }

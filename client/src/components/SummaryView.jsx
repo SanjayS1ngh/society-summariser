@@ -59,7 +59,7 @@ export default function SummaryView({ data }) {
           {data.from} to {data.to} &middot; {data.messageCount.toLocaleString()} messages &middot; Phone numbers are masked
         </p>
       </header>
-
+    <div className="hero-graphic-placeholder" style={{ marginTop: '20px' }} />
       {result.warnings?.map((w) => <p key={w} className="warn" role="alert">{w}</p>)}
 
       {SECTIONS.map((s) => {
