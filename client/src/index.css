@@ -1,0 +1,36 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f6f7f9; color: #14161a; font-size: 15px; line-height: 1.5; }
+h1 { font-size: 26px; margin: 0 0 6px; }
+h2 { font-size: 17px; margin: 0 0 10px; }
+.page { max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
+.narrow { max-width: 620px; }
+.muted { color: #5b6472; }
+.error { color: #b42318; }
+.warn { background: #fff4e5; border: 1px solid #f5c27a; padding: 10px 14px; border-radius: 8px; }
+.status { color: #0f766e; font-weight: 500; }
+.card { background: #fff; border: 1px solid #e3e6eb; border-radius: 14px; padding: 20px; margin-top: 16px; }
+.row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+input[type=date] { font: inherit; padding: 8px 10px; border: 1px solid #c9ced6; border-radius: 8px; }
+.btn, .primary { display: inline-block; border: 0; border-radius: 10px; padding: 11px 18px; font: inherit; font-weight: 500; cursor: pointer; background: #14161a; color: #fff; }
+.primary { background: #0f766e; }
+.primary:disabled { opacity: .5; cursor: not-allowed; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.summary { background: #fff; border: 1px solid #e3e6eb; border-radius: 14px; padding: 28px; }
+.block { margin-top: 24px; }
+.count { font-size: 12px; background: #e6f4f1; color: #0f766e; border-radius: 999px; padding: 2px 8px; margin-left: 6px; }
+ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+li { border-left: 3px solid #0f766e; padding-left: 12px; }
+li p { margin: 0; }
+.meta { font-size: 13px; color: #5b6472; }
+.sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
+.chip { font: inherit; font-size: 12px; border: 1px solid #c9ced6; background: #fff; border-radius: 999px; padding: 3px 10px; cursor: pointer; color: #0f766e; }
+.chip.on { background: #0f766e; color: #fff; border-color: #0f766e; }
+.quote { flex-basis: 100%; margin: 4px 0 0; padding: 8px 12px; background: #f6f7f9; border-radius: 8px; font-size: 13px; white-space: pre-wrap; }
+
+@media print {
+  body { background: #fff; font-size: 11px; }
+  .no-print { display: none; }
+  .page { padding: 0; max-width: none; }
+  .summary { border: 0; padding: 0; }
+  .block { break-inside: avoid; margin-top: 12px; }
+}
