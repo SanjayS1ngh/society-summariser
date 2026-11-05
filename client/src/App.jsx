@@ -6,7 +6,7 @@ export default function App() {
   return (
     <>
 
-      <img src="/tHi.gif" alt="" className="cartoon-character cartoon-walker" />
+      {/* <img src="/tHi.gif" alt="" className="cartoon-character cartoon-walker" /> */}
 
       <Routes>
         <Route path="/" element={<Home />} />
