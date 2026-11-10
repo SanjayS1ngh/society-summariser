@@ -172,15 +172,8 @@ The app records token usage for every run and shows it in the footer of each sum
 cost (USD) = (input tokens x PRICE_IN_PER_M + output tokens x PRICE_OUT_PER_M) / 1,000,000
 ```
 
-**Worked example (illustrative prices, not real quotes):** 20,000 input tokens and 2,000 output tokens at 0.10 and 0.40 USD per million tokens = **0.0028 USD** per run.
+Worked example (illustrative prices, not real quotes): 20,000 input tokens and 2,000 output tokens at 0.10 and 0.40 USD per million tokens = **0.0028 USD** per run.
 
-**Measured on real chats** (replace with your own numbers from the summary footer):
-
-| Chat | Messages | Chunks | AI calls | Tokens (in + out) | Cost (USD) |
-|---|---|---|---|---|---|
-| `<small chat>` | | | | | |
-| `<medium chat>` | | | | | |
-| `<large chat>` | | | | | |
 
 Cost grows with chat length: more messages mean more chunks, plus one extra merge call when there is more than one chunk.
 
@@ -199,7 +192,7 @@ The summary showed items the chat never mentioned. I made the AI cite message id
 ## Business sense
 
 - **Who would pay:** housing societies, resident welfare associations and property-management companies that run many groups.
-- **Pricing idea (to validate, not proven):** a small monthly fee per society, or a pay-per-summary plan. Because one run costs a fraction of a rupee in AI usage, the margin is large; the real work is trust and ease of use.
+- **Pricing idea :** a small monthly fee per society, or a pay-per-summary plan. Because one run costs a fraction of a rupee in AI usage, the margin is large; the real work is trust and ease of use.
 - **Why they would pay:** it saves the committee hours of scrolling and makes dues and decisions auditable, because every line points to its source message.
 
 ## Known limits
