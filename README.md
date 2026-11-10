@@ -194,9 +194,7 @@ Cost grows with chat length: more messages mean more chunks, plus one extra merg
 
 ## What broke, and how I fixed it
 
-> **Replace this with your own story.** One or two lines in the form: *"X broke because Y; I fixed it by Z."*
->
-> Example format: *"The summary showed items the chat never mentioned. I made the AI cite message ids and added a verification step that deletes any item whose ids do not exist."*
+The summary showed items the chat never mentioned. I made the AI cite message ids and added a verification step that deletes any item whose ids do not exist.
 
 ## Business sense
 
@@ -220,6 +218,3 @@ Cost grows with chat length: more messages mean more chunks, plus one extra merg
 - Progress indicator while the AI works
 - Accounts, so a committee can keep summaries across devices
 
-## License
-
-`<choose a license, for example MIT>`
